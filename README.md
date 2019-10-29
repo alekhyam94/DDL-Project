@@ -5,6 +5,7 @@ Our directory structure is as follows:
 - code:
   - NetDissect: Contains files for Network Dissection along with README.
   - youtube8m: Contains files for YouTube 8M Starter Code along with README.
+  - Starter_Explore_sample_data.ipynb: Code for data exploration and pre-processing. The sample data and files needed for running should be downloaded in ../sample_input and can be accessed here : https://drive.google.com/drive/folders/1e_moD2WWSDyKC4LBpP_ta9ctUoVAN4La?usp=sharing  
 - docs: Contains project proposal, progress reports and presentation.
 
 Team Members:
