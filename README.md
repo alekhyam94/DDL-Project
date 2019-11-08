@@ -6,6 +6,7 @@ Our directory structure is as follows:
   - NetDissect: Contains files for Network Dissection along with README.
   - youtube8m: Contains files for YouTube 8M Starter Code along with README.
   - Starter_Explore_sample_data.ipynb: Code for data exploration and pre-processing. The sample data and files needed for running should be downloaded in ../sample_input and can be accessed here : https://drive.google.com/drive/folders/1e_moD2WWSDyKC4LBpP_ta9ctUoVAN4La?usp=sharing  
+  - LSTM.ipynb: This is a Google Colab notebook for training LSTM model for Frame-level Video data. To run this notebook, upload the youtube8m folder to Google drive, open the notebook in Google Colaboratory and run all cells. 
 - docs: Contains project proposal, progress reports and presentation.
 
 Team Members:
