@@ -8,6 +8,7 @@ Our directory structure is as follows:
   - Starter_Explore_sample_data.ipynb: Code for data exploration and pre-processing. The sample data and files needed for running should be downloaded in ../sample_input and can be accessed here : https://drive.google.com/drive/folders/1e_moD2WWSDyKC4LBpP_ta9ctUoVAN4La?usp=sharing  
   - LSTM.ipynb: This is a Google Colab notebook for training LSTM model for Frame-level Video data. To run this notebook, upload the youtube8m folder to Google drive, open the notebook in Google Colaboratory and run all cells. 
   - LogisticModel.ipynb: This is a Google Colab notebook for training Logistic model for Frame-level Video data. To run this notebook, upload the youtube8m folder to Google drive, open the notebook in Google Colaboratory and run all cells. 
+  - Training_Resnet.ipynb: Designed and Implemented our own Residual block architectures from scratch for Video level classification. The model architecture code can be found in 'video_level_models.py' in youtube8m folder. Training_Resnet.ipynb is a Google Colab notebook for training this Resnet model for Video-level data. To run this notebook, upload the youtube8m folder to Google drive, open the notebook in Google Colaboratory and run all cells.
 - docs: Contains project proposal, progress reports and presentation.
 
 Installing Dependencies:
