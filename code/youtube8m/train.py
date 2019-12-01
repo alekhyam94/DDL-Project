@@ -266,7 +266,6 @@ def build_graph(reader,
   model_input_raw = input_data_dict["video_matrix"]
   labels_batch = input_data_dict["labels"]
   num_frames = input_data_dict["num_frames"]
-  print("model_input_shape, ", model_input_raw.shape)
   tf.summary.histogram("model/input_raw", model_input_raw)
 
   feature_dim = len(model_input_raw.get_shape()) - 1

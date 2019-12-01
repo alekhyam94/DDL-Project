@@ -217,7 +217,7 @@ class DbofModel(models.BaseModel):
 class LstmModel(models.BaseModel):
   """Creates a model which uses a stack of LSTMs to represent the video."""
 
-  def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+  def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
     """See base class.
 
     Args:
@@ -234,13 +234,29 @@ class LstmModel(models.BaseModel):
     """
     lstm_size = FLAGS.lstm_cells
     number_of_layers = FLAGS.lstm_layers
+    iterations = FLAGS.iterations
+    random_frames = FLAGS.sample_random_frames
+
+    num_frames_expanded = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
+    # if random_frames:
+    model_input = utils.SampleRandomFrames(model_input, num_frames_expanded,
+                                             iterations)
+    # else:
+    #   model_input = utils.SampleRandomSequence(model_input, num_frames_expanded,
+                                               # iterations)
 
     stacked_lstm = tf.contrib.rnn.MultiRNNCell([
-        tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0)
+        tf.contrib.rnn.BasicLSTMCell(
+            lstm_size, forget_bias=1.0, state_is_tuple=False)
         for _ in range(number_of_layers)
-    ])
+        ], state_is_tuple=False)
 
-    _, state = tf.nn.dynamic_rnn(stacked_lstm,
+    # stacked_lstm = tf.contrib.rnn.MultiRNNCell([
+    #     tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0)
+    #     for _ in range(number_of_layers)
+    # ])
+
+    outputs, state = tf.nn.dynamic_rnn(stacked_lstm,
                                  model_input,
                                  sequence_length=num_frames,
                                  dtype=tf.float32)
@@ -248,6 +264,12 @@ class LstmModel(models.BaseModel):
     aggregated_model = getattr(video_level_models,
                                FLAGS.video_level_classifier_model)
 
-    return aggregated_model().create_model(model_input=state[-1].h,
-                                           vocab_size=vocab_size,
-                                           **unused_params)
+    return aggregated_model().create_model(
+        model_input=state,
+        vocab_size=vocab_size,
+        is_training=is_training,
+        **unused_params)
+
+    # return aggregated_model().create_model(model_input=state[-1].h,
+    #                                        vocab_size=vocab_size,
+    #                                        **unused_params)
