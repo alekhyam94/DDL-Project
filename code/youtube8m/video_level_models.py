@@ -240,13 +240,45 @@ class MoeModel(models.BaseModel):
 #                                      [-1, vocab_size])
 #     return {"predictions": final_probabilities}
 
-class ResNet(models.BaseModel):
-  """ResNet architecture with Residual block with Conv layers """
+class ConvNet(models.BaseModel):
+  """Custom ConvNet architecture with Residual block with Conv layers """
   def create_model(self,
                    model_input,
                    vocab_size,
                    num_mixtures=None,
-                   l2_penalty=1e-8,
+                   l2_penalty=1e-3,
+                   **unused_params):
+    """
+    Args:
+      model_input: 'batch' x 'num_features' matrix of input features.
+      vocab_size: The number of classes in the dataset.
+
+    Returns:
+      A dictionary with a tensor containing the probability predictions of the
+      model in the 'predictions' key. The dimensions of the tensor are
+      batch_size x num_classes.
+    """
+    x = tf.reshape(model_input, [-1,model_input.get_shape().as_list()[1], 1])
+    #conv1d
+    conv1 = tf.layers.conv1d(x, 32, 7, strides=2, use_bias=True, padding='SAME', name='_conv1') 
+    #maxpool1d
+    maxpool1 = tf.layers.max_pooling1d(conv1, 4, strides=2,name='maxpool1',padding='VALID')
+    maxpool2_flat = tf.layers.flatten(maxpool1)
+    #Final FC Layer
+    output = slim.fully_connected(
+              maxpool2_flat,
+              vocab_size,
+              activation_fn=tf.nn.sigmoid,
+              weights_regularizer=slim.l2_regularizer(l2_penalty))
+    return {"predictions": output}
+
+class ResNet(models.BaseModel):
+  """Custom ResNet architecture with Residual block with Conv layers """
+  def create_model(self,
+                   model_input,
+                   vocab_size,
+                   num_mixtures=None,
+                   l2_penalty=1e-3,
                    **unused_params):
     """
     Args:
@@ -275,13 +307,12 @@ class ResNet(models.BaseModel):
     maxpool1 = tf.layers.max_pooling1d(conv1, 4, strides=2,name='maxpool1',padding='VALID')
     #Number of Residual blocks in the architecture
     #resblock1,2,3
-    #resblock1=resblock(maxpool1, 32, 3, name='resblock1')
-    #resblock2=resblock(resblock1, 32, 3, name='resblock2')
-    #resblock3=resblock(resblock2, 32, 3, name='resblock3')
-    #maxpool2=tf.layers.max_pooling1d(resblock3, 4, strides=4, name='maxpool2', padding='VALID')
+    resblock1=resblock(maxpool1, 32, 3, name='resblock1')
+    resblock2=resblock(resblock1, 32, 3, name='resblock2')
+    resblock3=resblock(resblock2, 32, 3, name='resblock3')
+    maxpool2=tf.layers.max_pooling1d(resblock3, 4, strides=4, name='maxpool2', padding='VALID')
     #print("Maxpool2 shape",maxpool2.get_shape().as_list())
-    #maxpool2_flat = tf.reshape(maxpool2, [maxpool2.get_shape().as_list()[0], -1])
-    maxpool2_flat = tf.layers.flatten(maxpool1)
+    maxpool2_flat = tf.layers.flatten(maxpool2)
     #Final FC Layer
     output = slim.fully_connected(
               maxpool2_flat,
@@ -296,7 +327,7 @@ class ResNetChanged(models.BaseModel):
                    model_input,
                    vocab_size,
                    num_mixtures=None,
-                   l2_penalty=1e-8,
+                   l2_penalty=1e-3,
                    **unused_params):
     """
     Args:
