@@ -388,7 +388,7 @@ class ResNetChanged(models.BaseModel):
 
 
 class ResNetLayers(models.BaseModel):
-  """ResNet architecture with Residual block with Fully Connected layers """
+  """ResNet architecture with Residual block with Fully Connected layers: Deeper Architecture """
   def create_model(self,
                    model_input,
                    vocab_size,
@@ -408,11 +408,9 @@ class ResNetLayers(models.BaseModel):
 
     #Mini Residual block: Fully Connected + ReLU + Batch-Norm + Fully Connected 
     def miniresnetblock(x, name):
-        #resblock = tf.layers.conv1d(x, filters, kernel_size, strides=1, use_bias=True, padding='SAME', name=name+'_conv1') 
         x = tf.layers.flatten(x)
         output_shape = x.get_shape().as_list()[1]   
         resblock = slim.fully_connected(x,output_shape,activation_fn=tf.nn.relu,weights_regularizer=slim.l2_regularizer(l2_penalty))
-        #resblock = tf.nn.relu(resblock, name=name+'_relu1')
         resblock = tf.layers.batch_normalization(resblock, name=name+'_batch1')
         resblock = tf.layers.flatten(resblock)
         resblock = slim.fully_connected(resblock,output_shape,activation_fn=None,weights_regularizer=slim.l2_regularizer(l2_penalty))
