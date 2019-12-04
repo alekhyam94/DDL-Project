@@ -272,7 +272,7 @@ class ConvNet(models.BaseModel):
               weights_regularizer=slim.l2_regularizer(l2_penalty))
     return {"predictions": output}
 
-class ResNet(models.BaseModel):
+class ResNetConv(models.BaseModel):
   """Custom ResNet architecture with Residual block with Conv layers """
   def create_model(self,
                    model_input,
@@ -383,4 +383,71 @@ class ResNetChanged(models.BaseModel):
     
     #resblock = tf.nn.relu(resblock3, name='_relu')
     #output = tf.nn.softmax(resblock, name='softmax')
+    return {"predictions": output}
+
+
+
+class ResNetLayers(models.BaseModel):
+  """ResNet architecture with Residual block with Fully Connected layers """
+  def create_model(self,
+                   model_input,
+                   vocab_size,
+                   num_mixtures=None,
+                   l2_penalty=1e-3,
+                   **unused_params):
+    """
+    Args:
+      model_input: 'batch' x 'num_features' matrix of input features.
+      vocab_size: The number of classes in the dataset.
+
+    Returns:
+      A dictionary with a tensor containing the probability predictions of the
+      model in the 'predictions' key. The dimensions of the tensor are
+      batch_size x num_classes.
+    """
+
+    #Mini Residual block: Fully Connected + ReLU + Batch-Norm + Fully Connected 
+    def miniresnetblock(x, name):
+        #resblock = tf.layers.conv1d(x, filters, kernel_size, strides=1, use_bias=True, padding='SAME', name=name+'_conv1') 
+        x = tf.layers.flatten(x)
+        output_shape = x.get_shape().as_list()[1]   
+        resblock = slim.fully_connected(x,output_shape,activation_fn=tf.nn.relu,weights_regularizer=slim.l2_regularizer(l2_penalty))
+        #resblock = tf.nn.relu(resblock, name=name+'_relu1')
+        resblock = tf.layers.batch_normalization(resblock, name=name+'_batch1')
+        resblock = tf.layers.flatten(resblock)
+        resblock = slim.fully_connected(resblock,output_shape,activation_fn=None,weights_regularizer=slim.l2_regularizer(l2_penalty))
+        return tf.nn.relu(resblock+x)
+    
+
+    #Residual block: (Fully Connected + ReLU + Batch-Norm) x 2 + Fully Connected 
+    def resnetblock(x, name):
+        x = tf.layers.flatten(x)
+        output_shape = x.get_shape().as_list()[1]   
+        resblock = slim.fully_connected(x,output_shape,activation_fn=tf.nn.relu,weights_regularizer=slim.l2_regularizer(l2_penalty))
+        resblock = tf.layers.batch_normalization(resblock, name=name+'_batch1')
+        
+        resblock = tf.layers.flatten(resblock)
+        resblock = slim.fully_connected(resblock,output_shape,activation_fn=tf.nn.relu,weights_regularizer=slim.l2_regularizer(l2_penalty))
+        resblock = tf.layers.batch_normalization(resblock, name=name+'_batch2')
+
+        resblock = tf.layers.flatten(resblock)
+        resblock = slim.fully_connected(resblock,output_shape,activation_fn=None,weights_regularizer=slim.l2_regularizer(l2_penalty))
+        return tf.nn.relu(resblock+x)
+
+    #Intermediate Block: ReLU + Batch-Norm
+    def connectblock(x):
+      resblock = tf.nn.relu(x)
+      resblock = tf.layers.batch_normalization(resblock)
+      return resblock
+
+    #Number of Residual blocks in the architecture
+    
+    resblock1 = miniresnetblock(model_input, name='resblock1')
+    resblock2 = connectblock(resblock1)
+
+    resblock1 = resnetblock(resblock2, name='resblock3')
+    resblock2 = tf.nn.relu(resblock1)
+
+    output = slim.fully_connected(resblock2,vocab_size,activation_fn=tf.nn.sigmoid,weights_regularizer=slim.l2_regularizer(l2_penalty))
+    
     return {"predictions": output}
