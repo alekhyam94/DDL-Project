@@ -92,6 +92,14 @@ class ParserVisitorTest(unittest.TestCase):
             visitor.visitComparisonOperator(ctx),
             ExpressionType.COMPARE_GREATER)
 
+    def test_visit_nested_expression_atom(self):
+        ctx = MagicMock()
+        visitor = EvaParserVisitor()
+        EvaParserVisitor.visit = MagicMock()
+        mock_visit = EvaParserVisitor.visit
+        expected = visitor.visitNestedExpressionAtom(ctx)
+
+        mock_visit.assert_has_calls([call(ctx.expression(0))])
 
 if __name__ == '__main__':
     unittest.main()
