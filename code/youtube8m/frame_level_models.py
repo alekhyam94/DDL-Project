@@ -11,6 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# This file has been modified by Team6 - Sanmathi Kamath, Pranjali Kokare, Alekhya Munagala.
+# The following function has been modified by Team6:
+#         - LstmModel
+
 """Contains a collection of models which operate on variable-length sequences."""
 import math
 
@@ -215,10 +220,10 @@ class DbofModel(models.BaseModel):
 
 
 class LstmModel(models.BaseModel):
-  """Creates a model which uses a stack of LSTMs to represent the video."""
+  """Creates a custom model which uses a stack of LSTMs to represent the video."""
 
   def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
-    """See base class.
+    """See base class (models.BaseModel)
 
     Args:
       model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
@@ -238,23 +243,15 @@ class LstmModel(models.BaseModel):
     random_frames = FLAGS.sample_random_frames
 
     num_frames_expanded = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
-    # if random_frames:
+    
     model_input = utils.SampleRandomFrames(model_input, num_frames_expanded,
                                              iterations)
-    # else:
-    #   model_input = utils.SampleRandomSequence(model_input, num_frames_expanded,
-                                               # iterations)
-
+    
     stacked_lstm = tf.contrib.rnn.MultiRNNCell([
         tf.contrib.rnn.BasicLSTMCell(
             lstm_size, forget_bias=1.0, state_is_tuple=False)
         for _ in range(number_of_layers)
         ], state_is_tuple=False)
-
-    # stacked_lstm = tf.contrib.rnn.MultiRNNCell([
-    #     tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0)
-    #     for _ in range(number_of_layers)
-    # ])
 
     outputs, state = tf.nn.dynamic_rnn(stacked_lstm,
                                  model_input,
@@ -269,7 +266,3 @@ class LstmModel(models.BaseModel):
         vocab_size=vocab_size,
         is_training=is_training,
         **unused_params)
-
-    # return aggregated_model().create_model(model_input=state[-1].h,
-    #                                        vocab_size=vocab_size,
-    #                                        **unused_params)

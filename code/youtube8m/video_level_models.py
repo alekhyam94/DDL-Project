@@ -11,6 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# This file has been modified by Team6 - Sanmathi Kamath, Pranjali Kokare, Alekhya Munagala.
+# The following functions have been witten by Team6:
+#         - ConvNet
+#         - ResNetConv
+#         - ResNetChanged
+#         - ResNetLayers
+# The following functions have been modified by Team6:
+#         - MoeModel
+
 """Contains model definitions."""
 import math
 
@@ -50,7 +60,7 @@ class LogisticModel(models.BaseModel):
                    l2_penalty=1e-8,
                    **unused_params):
     """Creates a logistic model.
-
+      Creates a tensorflow model by setting up a network graph and its connections. 
     Args:
       model_input: 'batch' x 'num_features' matrix of input features.
       vocab_size: The number of classes in the dataset.
@@ -83,7 +93,8 @@ class MoeModel(models.BaseModel):
      The model consists of a per-class softmax distribution over a
      configurable number of logistic classifiers. One of the classifiers in the
      mixture is not trained, and always predicts 0.
-
+    
+     Creates a tensorflow model by setting up a network graph and its connections. 
     Args:
       model_input: 'batch_size' x 'num_features' matrix of input features.
       vocab_size: The number of classes in the dataset.
@@ -217,6 +228,7 @@ class ConvNet(models.BaseModel):
               vocab_size,
               activation_fn=tf.nn.sigmoid,
               weights_regularizer=slim.l2_regularizer(l2_penalty))
+    
     return {"predictions": output}
 
 class ResNetConv(models.BaseModel):
@@ -272,7 +284,7 @@ class ResNetConv(models.BaseModel):
     return {"predictions": output}
 
 class ResNetChanged(models.BaseModel):
-  """ResNet architecture with Residual block with Fully Connected layers """
+  """Custom ResNet architecture with Residual block with Fully Connected layers """
   def create_model(self,
                    model_input,
                    vocab_size,
@@ -290,9 +302,9 @@ class ResNetChanged(models.BaseModel):
       model in the 'predictions' key. The dimensions of the tensor are
       batch_size x num_classes.
     """
-    #Residual block
+    
+    # Residual block with FullyConnected Layers: Fully Connected + ReLU + Batch-Norm + Fully Connected 
     def residualblockFC(x, name):
-        #FC+RELU+BATCH_NORM*2+Fc
         x = tf.layers.flatten(x)
         output_shape = x.get_shape().as_list()[1]   
         resblock = slim.fully_connected(x,output_shape,activation_fn=tf.nn.relu,weights_regularizer=slim.l2_regularizer(l2_penalty))
@@ -307,7 +319,7 @@ class ResNetChanged(models.BaseModel):
     return {"predictions": output}
 
 class ResNetLayers(models.BaseModel):
-  """ResNet architecture with Residual block with Fully Connected layers: Deeper Architecture """
+  """Custom ResNet architecture with Residual block with Fully Connected layers: Deeper Architecture """
   def create_model(self,
                    model_input,
                    vocab_size,
