@@ -101,5 +101,13 @@ class ParserVisitorTest(unittest.TestCase):
 
         mock_visit.assert_has_calls([call(ctx.expression(0))])
 
+    def test_visit_full_column_name(self):
+        ctx = MagicMock()
+        visitor = EvaParserVisitor()
+        EvaParserVisitor.visit = MagicMock()
+        EvaParserVisitor.visit.return_value = None
+        with self.assertWarns(SyntaxWarning, msg='Column Name Missing'):
+            visitor.visitFullColumnName(ctx)
+
 if __name__ == '__main__':
     unittest.main()
