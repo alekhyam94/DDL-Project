@@ -26,6 +26,10 @@ To know more about third-party code, please refer to README of individual folder
 - All the models have been built using TensorFlow. In TensorFlow, training is done in two phases. In the first phase, the computation graphs are built and in the second phase, actual training is done using the graph. To know more, refer: https://deepnotes.io/tensorflow
 - The accuracies in the notebook may not reflect our best model performance. Please refer to reports in /docs for performance evaluation.  
 
+### Eva Testing
+We have also contributed to Eva by improving coverage of Query Parser module. Please refer to our work at this repository:
+https://github.com/KokareIITP/Eva
+
 ### Contributors
 - Sanmathi Kamath
 - Pranjali Kokare
