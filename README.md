@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ```
 To know more about third-party code, please refer to README of individual folders of each of those sections.
 
-### Code Structure
+### Directory Structure
 - code:
   - youtube8m: Contains files for YouTube 8M Video Understanding along with README.
   - Starter_Explore_sample_data.ipynb: Code for data exploration and pre-processing. The sample data and files needed for running should be downloaded in ../sample_input and can be accessed here : https://drive.google.com/drive/folders/1e_moD2WWSDyKC4LBpP_ta9ctUoVAN4La?usp=sharing  
@@ -22,6 +22,7 @@ To know more about third-party code, please refer to README of individual folder
   - ResNetLayers.ipynb: This architecture contains 2 modules, mini-residual block and basic-residual block for video-level classification.  The model architecture code can be found in 'video_level_models.py' in youtube8m folder.
 
 - docs: Contains project proposal, progress reports and presentations.
+- tests: Contains comprehensive tests for all our models. 
 
 ### Notes
 - To run these notebooks, upload the youtube8m folder to Google drive, open the notebook in Google Colaboratory and run all cells. 
