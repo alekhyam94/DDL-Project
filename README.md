@@ -1,7 +1,9 @@
 # Video Understanding
 This repository is being maintained by project Team 6 from DDL course (CS 8803), Georgia Tech. We are working on Video Understading wherein given a video, we would like to predict multiple labels/categories/tags for each video. With an increase in generation and consumption of videos, efficient retrieval of videos has become a challenging task. By providing multiple labels/categories to each video, we hope to develop a better video understanding, as a step towards solving this problem. 
 
+### Example of Tagging a Video
 ![Example of tagging a video. Suitable tags: Celebration, Birthday, Blowing Candles, Cake](video_tagging.gif)
+<br />  Tags: Celebration, Birthday, Blowing Candles, Cake
 
 ### Installation
 To install all the dependencies for this project, run the following command:
