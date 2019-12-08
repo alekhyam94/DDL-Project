@@ -1,3 +1,18 @@
+# YouTube-8M Code
+
+This module is derived from the starter code provided by the YouTube-8M challenge. We have built upon this by modifying and adding our own architectures for better performance. We have added the following models:
+* Frame level models:
+   * Modified LSTM architecture
+   * Modified MoE architecture and used it in conjuction with LSTM
+* Video level models:
+   * Built custom ConvNet architecture
+   * Built custom ResNet architecture
+   * Built the custom ResNet architecture with Fully connected layers
+   * Built a deeper custom ResNet architecture with fully connected layers
+
+
+The original README is as follows:
+
 # YouTube-8M Tensorflow Starter Code
 
 This repo contains starter code for training and evaluating machine learning
